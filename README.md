@@ -69,6 +69,10 @@ Stage 4: RL for All Scenarios
    - Maintain reasoning capabilities
 ```
 
+## Reward Modeling
+1. Accuray Rewards
+2. Format Rewards
+
 ##  AhaMomentofDeepSeek-R1-Zero
 ![image](https://github.com/user-attachments/assets/548175a9-d337-4fd8-9d1f-98419db0e098)
 
