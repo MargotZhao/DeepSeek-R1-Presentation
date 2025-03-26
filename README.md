@@ -21,7 +21,8 @@ The core question this paper addresses is: Can pure reinforcement learning (RL) 
 
 ### Approach
 The researchers took a novel approach by:
-1. Applying reinforcement learning directly to base models without supervised fine-tuning as an initial step (DeepSeek-R1-Zero)
+1. Applying reinforcement learning directly to base models without supervised fine-tuning as an initial step (DeepSeek-R1-Zero) (poor readability, and language
+ mixing)
 2. Developing a multi-stage training pipeline incorporating cold-start data and iterative RL fine-tuning (DeepSeek-R1)
 3. Distilling reasoning capabilities from larger models to smaller dense models
 
