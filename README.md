@@ -16,6 +16,13 @@ The research also demonstrates successful distillation of reasoning capabilities
 
 ![benchmark](https://github.com/user-attachments/assets/d386014a-98cc-43fe-b29b-65b367939605)
 
+AIME 2024 (Pass@1): American Invitational Mathematics Examination 
+Codeforces (Percentile): is a competitive programming platform. 
+GPQA Diamond (Pass@1): Graduate-level Google-Proof Q&A) tests graduate-level knowledge across physics, chemistry, biology, and more. 
+MATH-500 (Pass@1): A collection of 500 challenging math problems spanning algebra, geometry, calculus, and more. 
+MMLU (Pass@1): Massive Multitask Language Understanding evaluates knowledge across 57 subjects including science, humanities, law, and medicine.
+SWE-bench Verified (Resolved): Software Engineering benchmark that tests the model's ability to fix real-world software bugs in open-source projects.
+
 ### Research Question
 The core question this paper addresses is: Can pure reinforcement learning (RL) be used to enhance reasoning capabilities in LLMs without relying heavily on supervised fine-tuning (SFT)?
 
