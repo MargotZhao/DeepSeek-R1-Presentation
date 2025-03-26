@@ -2,90 +2,119 @@
 # Margot Zhao
 # 3/26/2025
 
-This repository contains materials for a presentation of the paper "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" (arXiv:2501.12948v1, Jan 2025).
+# DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning
 
-## Paper Summary
+## Introduction 
+Good afternoon everyone! Today I'll be presenting the paper "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" from DeepSeek-AI. This paper introduces significant advancements in developing reasoning capabilities in large language models through reinforcement learning techniques.
 
-DeepSeek-R1 represents a breakthrough in enhancing reasoning capabilities of Large Language Models (LLMs) through reinforcement learning. The paper introduces two main models:
+## Overview 
+### Problem Statement
+Current LLMs face challenges in complex reasoning tasks despite their impressive capabilities. While models like OpenAI's o1 have made progress through inference-time scaling with longer Chain-of-Thought processes, the wider research community lacks effective methods to achieve comparable reasoning performance.
 
-1. **DeepSeek-R1-Zero**: A model trained via large-scale reinforcement learning without supervised fine-tuning, demonstrating remarkable reasoning capabilities.
+### Research Question
+The core question this paper addresses is: Can pure reinforcement learning (RL) be used to enhance reasoning capabilities in LLMs without relying heavily on supervised fine-tuning (SFT)?
 
-2. **DeepSeek-R1**: A model that incorporates multi-stage training and cold-start data before reinforcement learning.
+### Approach
+The researchers took a novel approach by:
+1. Applying reinforcement learning directly to base models without supervised fine-tuning as an initial step (DeepSeek-R1-Zero)
+2. Developing a multi-stage training pipeline incorporating cold-start data and iterative RL fine-tuning (DeepSeek-R1)
+3. Distilling reasoning capabilities from larger models to smaller dense models
 
-The research also demonstrates successful distillation of reasoning capabilities to smaller dense models (1.5B to 70B parameters).
+### Contributions
+The paper makes three key contributions:
+1. Demonstrating that reasoning capabilities can be incentivized purely through RL (DeepSeek-R1-Zero)
+2. Introducing a viable pipeline combining limited supervised data with extensive RL
+3. Showing that reasoning patterns from larger models can be effectively distilled to smaller ones
 
-## Key Contributions
+## Architecture Overview 
+### DeepSeek-R1-Zero Architecture
+```
+Algorithm: Group Relative Policy Optimization (GRPO)
+Base Model: DeepSeek-V3-Base
+Training Process:
+1. Initialize with base model without SFT
+2. For each reasoning question q:
+   - Sample multiple outputs {o₁, o₂, ..., oₖ} from current policy
+   - Compute rewards {r₁, r₂, ..., rₖ} using rule-based evaluation
+   - Calculate advantages A_i = (r_i - mean(rewards))/std(rewards)
+   - Update policy to maximize GRPO objective:
+     J_GRPO(θ) = E[min(π_θ(o|q)/π_old(o|q) × A, clip(π_θ(o|q)/π_old(o|q), 1-ε, 1+ε) × A)]
+3. Output format: <think>reasoning process</think><answer>final answer</answer>
+```
 
-- First open research to validate that reasoning capabilities can be incentivized purely through RL without SFT.
-- Introduction of a training pipeline combining RL and SFT stages that produces state-of-the-art reasoning performance.
-- Demonstration that reasoning patterns from larger models can be distilled into smaller ones.
-- Open-sourcing of DeepSeek-R1-Zero, DeepSeek-R1, and six dense distilled models.
+### DeepSeek-R1 Architecture
+```
+Multi-Stage Pipeline:
+Stage 1: Cold-Start Data Collection
+   - Collect thousands of high-quality CoT examples
+   - Fine-tune DeepSeek-V3-Base on this data
 
-## Performance Highlights
+Stage 2: Reasoning-Oriented RL
+   - Apply GRPO framework with rule-based rewards
+   - Add language consistency reward to prevent language mixing
 
-DeepSeek-R1 achieves performance comparable to OpenAI-o1-1217 on reasoning tasks:
+Stage 3: Rejection Sampling and SFT
+   - Generate diverse reasoning data through rejection sampling
+   - Incorporate non-reasoning data (writing, factual QA, etc.)
+   - Fine-tune with combined dataset (~800k samples)
 
-| Benchmark | DeepSeek-R1 | OpenAI-o1-1217 |
-|-----------|-------------|----------------|
-| AIME 2024 (Pass@1) | 79.8% | 79.2% |
-| Codeforces (Percentile) | 96.3% | 96.6% |
-| GPQA Diamond (Pass@1) | 71.5% | 75.7% |
-| MATH-500 (Pass@1) | 97.3% | 96.4% |
-| MMLU (Pass@1) | 90.8% | 91.8% |
-| SWE-bench Verified (Resolved) | 49.2% | 48.9% |
-![image](https://github.com/user-attachments/assets/5bded521-b00a-45d5-9ea1-386c7bcb18a0)
-![image](https://github.com/user-attachments/assets/cdb4ee9f-655d-4768-b4dc-dca0c900bc1b)
-![image](https://github.com/user-attachments/assets/b7107916-01ce-4896-b5a1-2745ecc89dde)
+Stage 4: RL for All Scenarios
+   - Apply RL to improve helpfulness and harmlessness
+   - Maintain reasoning capabilities
+```
 
+## Key Results 
+DeepSeek-R1 achieves impressive performance across various benchmarks:
+- AIME 2024: 79.8% (outperforming OpenAI-o1-1217's 79.2%)
+- MATH-500: 97.3% (comparable to OpenAI-o1-1217's 96.4%)
+- Codeforces: 96.3 percentile rating (similar to OpenAI-o1-1217's 96.6)
+- MMLU: 90.8% (slightly below OpenAI-o1-1217's 91.8%)
+- GPQA Diamond: 71.5% (below OpenAI-o1-1217's 75.7%)
 
+The distilled models also show strong performance:
+- DeepSeek-R1-Distill-Qwen-7B: 55.5% on AIME 2024 (outperforming QwQ-32B-Preview)
+- DeepSeek-R1-Distill-Qwen-32B: 72.6% on AIME 2024, 94.3% on MATH-500
 
+## Critical Analysis 
+### Limitations
+1. Language mixing issues - DeepSeek-R1-Zero struggled with mixing languages in outputs
+2. Readability challenges - outputs required additional structuring to be human-friendly
+3. Software engineering performance - not significantly improved over DeepSeek-V3 due to evaluation time constraints
+4. Prompt sensitivity - DeepSeek-R1 performs better with zero-shot than few-shot prompting
+5. Non-reasoning tasks may show reduced performance compared to specialized models
 
-## Technical Approach
+### Unsuccessful Attempts
+The authors transparently discuss failed approaches:
+1. Process Reward Models (PRMs) - challenges in defining fine-grained steps and reward hacking
+2. Monte Carlo Tree Search (MCTS) - exponentially large search space and difficulty training value models
 
-### DeepSeek-R1-Zero
-- Direct RL on the base model (DeepSeek-V3-Base) without SFT
-- Group Relative Policy Optimization (GRPO) as the RL framework
-- Rule-based rewards for accuracy and format
-- Natural emergence of sophisticated reasoning behaviors
+## Impacts and Future Directions 
+This work impacts the AI landscape by:
+1. Proving reinforcement learning alone can significantly enhance reasoning capabilities
+2. Demonstrating effective distillation of reasoning abilities to smaller models
+3. Providing open-source models for community research
+4. Establishing a framework for future improvements in language model reasoning
 
-### DeepSeek-R1
-1. Cold-start with high-quality CoT data
-2. Reasoning-oriented RL
-3. Rejection sampling and supervised fine-tuning
-4. Final RL for all scenarios
+Future work directions include:
+1. Enhancing general capabilities (function calling, multi-turn conversation)
+2. Addressing language mixing issues
+3. Improving software engineering capabilities
+4. Optimizing prompting techniques
 
-### Distillation
-- Transfer of reasoning patterns to smaller dense models
-- Models from 1.5B to 70B parameters based on Qwen and Llama
+## Questions for the Audience
+### Question 1
+The paper showed that RL without supervised fine-tuning can develop remarkable reasoning capabilities. What implications do you think this has for the future development of AI systems that can perform complex, multi-step reasoning?
 
-## Demos and Examples
+### Question 2
+The authors observed an "aha moment" where DeepSeek-R1-Zero spontaneously developed self-verification and reflection capabilities. What might this tell us about the emergence of cognitive-like abilities in large language models?
 
-This repository includes a [Jupyter notebook](./demos/reasoning_examples.ipynb) demonstrating examples of the reasoning capabilities of DeepSeek-R1, including:
+## Resources and References
+- GitHub Repository: https://github.com/deepseek-ai/DeepSeek-R1
+- Paper: "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" (Jan 2025)
+- Model API: Available through DeepSeek's API services
+- Related Work: OpenAI's o1 series, GRPO framework paper, Math-Shepherd
 
-1. Mathematical problem-solving
-2. Coding challenges
-3. Scientific reasoning tasks
-4. Emergent behavior examples (self-verification, reflection)
-
-## Limitations and Future Work
-
-- General capability gaps compared to DeepSeek-V3 in function calling, multi-turn interactions, and complex role-playing
-- Language mixing issues when handling queries in languages other than English/Chinese
-- Sensitivity to prompting (performs best with zero-shot)
-- Limited improvement in software engineering tasks
-
-## Resources
-
-- [Original Paper on arXiv](https://arxiv.org/abs/2501.12948)
-- [DeepSeek-AI Official GitHub](https://github.com/deepseek-ai)
-- [GRPO: Group Relative Policy Optimization](https://arxiv.org/abs/2402.03300) - The RL algorithm used
-- [OpenAI's Learning to Reason with LLMs](https://openai.com/index/learning-to-reason-with-llms/) - Related research on reasoning
-- [Llama 3 Paper](https://arxiv.org/abs/2407.21783) - Relevant foundation model used in distillation
-
-## Citation
-
-```bibtex
-@article{deepseek2025r1,
+*Note: I'll conclude by taking questions from the audience, and direct them to our repository for further information, code examples, and detailed documentation.*
   title={DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning},
   author={DeepSeek-AI},
   journal={arXiv preprint arXiv:2501.12948},
