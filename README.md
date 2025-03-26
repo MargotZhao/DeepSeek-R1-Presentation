@@ -193,11 +193,17 @@ When responding, please keep the following points in mind:
 ```
 
 ## Questions for the Audience
-### Question 1
-The paper showed that RL without supervised fine-tuning can develop remarkable reasoning capabilities. What implications do you think this has for the future development of AI systems that can perform complex, multi-step reasoning?
+## Question 1 
+What unique behavior did the DeepSeek-R1-Zero model develop that surprised researchers, as shown in the 'aha moment' example?
 
-### Question 2
-The authors observed an "aha moment" where DeepSeek-R1-Zero spontaneously developed self-verification and reflection capabilities. What might this tell us about the emergence of cognitive-like abilities in large language models?
+## Answer 1
+The model developed self-correction behavior where it stopped in the middle of solving a problem, recognized it was using an overly complicated approach, and restarted with a better method - all without being explicitly programmed to do so. This emergent behavior demonstrated a form of metacognition similar to human problem-solving.
+
+## Question 2 
+What is the fundamental difference between how a model learns through accuracy rewards in reinforcement learning versus supervised fine-tuning?
+
+## Answer 2 
+In supervised fine-tuning, the model learns by imitating complete examples with correct answers provided by humans. It's like learning from a textbook with worked solutions. With accuracy rewards in reinforcement learning, the model is only given problems and feedback on whether its final answer is correct - not how to solve it. This allows the model to discover novel solution methods on its own rather than just mimicking human approaches. DeepSeek-R1-Zero demonstrated that models can develop sophisticated reasoning strategies through this exploration process without being shown examples first.
 
 ## Resources and References
 - GitHub Repository: https://github.com/deepseek-ai/DeepSeek-R1
