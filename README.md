@@ -4,15 +4,17 @@
 
 # DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning
 
-## Introduction 
-Good afternoon everyone! Today I'll be presenting the paper "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" from DeepSeek-AI. This paper introduces significant advancements in developing reasoning capabilities in large language models through reinforcement learning techniques.
-
-![benchmark](https://github.com/user-attachments/assets/d386014a-98cc-43fe-b29b-65b367939605)
-
-
 ## Overview 
 ### Problem Statement
-Current LLMs face challenges in complex reasoning tasks despite their impressive capabilities. While models like OpenAI's o1 have made progress through inference-time scaling with longer Chain-of-Thought processes, the wider research community lacks effective methods to achieve comparable reasoning performance.
+DeepSeek-R1 represents a breakthrough in enhancing reasoning capabilities of Large Language Models (LLMs) through reinforcement learning. The paper introduces two main models:
+
+1. **DeepSeek-R1-Zero**: A model trained via large-scale reinforcement learning without supervised fine-tuning, demonstrating remarkable reasoning capabilities.
+
+2. **DeepSeek-R1**: A model that incorporates multi-stage training and cold-start data before reinforcement learning.
+
+The research also demonstrates successful distillation of reasoning capabilities to smaller dense models (1.5B to 70B parameters).
+
+![benchmark](https://github.com/user-attachments/assets/d386014a-98cc-43fe-b29b-65b367939605)
 
 ### Research Question
 The core question this paper addresses is: Can pure reinforcement learning (RL) be used to enhance reasoning capabilities in LLMs without relying heavily on supervised fine-tuning (SFT)?
