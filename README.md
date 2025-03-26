@@ -7,6 +7,9 @@
 ## Introduction 
 Good afternoon everyone! Today I'll be presenting the paper "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" from DeepSeek-AI. This paper introduces significant advancements in developing reasoning capabilities in large language models through reinforcement learning techniques.
 
+![benchmark](https://github.com/user-attachments/assets/d386014a-98cc-43fe-b29b-65b367939605)
+
+
 ## Overview 
 ### Problem Statement
 Current LLMs face challenges in complex reasoning tasks despite their impressive capabilities. While models like OpenAI's o1 have made progress through inference-time scaling with longer Chain-of-Thought processes, the wider research community lacks effective methods to achieve comparable reasoning performance.
@@ -63,17 +66,63 @@ Stage 4: RL for All Scenarios
    - Maintain reasoning capabilities
 ```
 
-## Key Results 
-DeepSeek-R1 achieves impressive performance across various benchmarks:
-- AIME 2024: 79.8% (outperforming OpenAI-o1-1217's 79.2%)
-- MATH-500: 97.3% (comparable to OpenAI-o1-1217's 96.4%)
-- Codeforces: 96.3 percentile rating (similar to OpenAI-o1-1217's 96.6)
-- MMLU: 90.8% (slightly below OpenAI-o1-1217's 91.8%)
-- GPQA Diamond: 71.5% (below OpenAI-o1-1217's 75.7%)
+##  AhaMomentofDeepSeek-R1-Zero
+![image](https://github.com/user-attachments/assets/548175a9-d337-4fd8-9d1f-98419db0e098)
 
-The distilled models also show strong performance:
-- DeepSeek-R1-Distill-Qwen-7B: 55.5% on AIME 2024 (outperforming QwQ-32B-Preview)
-- DeepSeek-R1-Distill-Qwen-32B: 72.6% on AIME 2024, 94.3% on MATH-500
+## DeepSeek-R1-Evaluation
+ For all our models, the maximum generation length is set to 32,768 tokens. For benchmarks requiring sampling, we use a temperature of $0.6$, a top-p value of $0.95$, and generate 64 responses per query to estimate pass@1.
+<div align="center">
+
+
+| Category | Benchmark (Metric) | Claude-3.5-Sonnet-1022 | GPT-4o 0513 | DeepSeek V3 | OpenAI o1-mini | OpenAI o1-1217 | DeepSeek R1 |
+|----------|-------------------|----------------------|------------|--------------|----------------|------------|--------------|
+| | Architecture | - | - | MoE | - | - | MoE |
+| | # Activated Params | - | - | 37B | - | - | 37B |
+| | # Total Params | - | - | 671B | - | - | 671B |
+| English | MMLU (Pass@1) | 88.3 | 87.2 | 88.5 | 85.2 | **91.8** | 90.8 |
+| | MMLU-Redux (EM) | 88.9 | 88.0 | 89.1 | 86.7 | - | **92.9** |
+| | MMLU-Pro (EM) | 78.0 | 72.6 | 75.9 | 80.3 | - | **84.0** |
+| | DROP (3-shot F1) | 88.3 | 83.7 | 91.6 | 83.9 | 90.2 | **92.2** |
+| | IF-Eval (Prompt Strict) | **86.5** | 84.3 | 86.1 | 84.8 | - | 83.3 |
+| | GPQA-Diamond (Pass@1) | 65.0 | 49.9 | 59.1 | 60.0 | **75.7** | 71.5 |
+| | SimpleQA (Correct) | 28.4 | 38.2 | 24.9 | 7.0 | **47.0** | 30.1 |
+| | FRAMES (Acc.) | 72.5 | 80.5 | 73.3 | 76.9 | - | **82.5** |
+| | AlpacaEval2.0 (LC-winrate) | 52.0 | 51.1 | 70.0 | 57.8 | - | **87.6** |
+| | ArenaHard (GPT-4-1106) | 85.2 | 80.4 | 85.5 | 92.0 | - | **92.3** |
+| Code | LiveCodeBench (Pass@1-COT) | 33.8 | 34.2 | - | 53.8 | 63.4 | **65.9** |
+| | Codeforces (Percentile) | 20.3 | 23.6 | 58.7 | 93.4 | **96.6** | 96.3 |
+| | Codeforces (Rating) | 717 | 759 | 1134 | 1820 | **2061** | 2029 |
+| | SWE Verified (Resolved) | **50.8** | 38.8 | 42.0 | 41.6 | 48.9 | 49.2 |
+| | Aider-Polyglot (Acc.) | 45.3 | 16.0 | 49.6 | 32.9 | **61.7** | 53.3 |
+| Math | AIME 2024 (Pass@1) | 16.0 | 9.3 | 39.2 | 63.6 | 79.2 | **79.8** |
+| | MATH-500 (Pass@1) | 78.3 | 74.6 | 90.2 | 90.0 | 96.4 | **97.3** |
+| | CNMO 2024 (Pass@1) | 13.1 | 10.8 | 43.2 | 67.6 | - | **78.8** |
+| Chinese | CLUEWSC (EM) | 85.4 | 87.9 | 90.9 | 89.9 | - | **92.8** |
+| | C-Eval (EM) | 76.7 | 76.0 | 86.5 | 68.9 | - | **91.8** |
+| | C-SimpleQA (Correct) | 55.4 | 58.7 | **68.0** | 40.3 | - | 63.7 |
+
+</div>
+
+
+### Distilled Model Evaluation
+
+
+<div align="center">
+
+| Model                                    | AIME 2024 pass@1 | AIME 2024 cons@64 | MATH-500 pass@1 | GPQA Diamond pass@1 | LiveCodeBench pass@1 | CodeForces rating |
+|------------------------------------------|------------------|-------------------|-----------------|----------------------|----------------------|-------------------|
+| GPT-4o-0513                          | 9.3              | 13.4              | 74.6            | 49.9                 | 32.9                 | 759               |
+| Claude-3.5-Sonnet-1022             | 16.0             | 26.7                 | 78.3            | 65.0                 | 38.9                 | 717               |
+| o1-mini                              | 63.6             | 80.0              | 90.0            | 60.0                 | 53.8                 | **1820**          |
+| QwQ-32B-Preview                              | 44.0             | 60.0                 | 90.6            | 54.5               | 41.9                 | 1316              |
+| DeepSeek-R1-Distill-Qwen-1.5B       | 28.9             | 52.7              | 83.9            | 33.8                 | 16.9                 | 954               |
+| DeepSeek-R1-Distill-Qwen-7B          | 55.5             | 83.3              | 92.8            | 49.1                 | 37.6                 | 1189              |
+| DeepSeek-R1-Distill-Qwen-14B         | 69.7             | 80.0              | 93.9            | 59.1                 | 53.1                 | 1481              |
+| DeepSeek-R1-Distill-Qwen-32B        | **72.6**         | 83.3              | 94.3            | 62.1                 | 57.2                 | 1691              |
+| DeepSeek-R1-Distill-Llama-8B         | 50.4             | 80.0              | 89.1            | 49.0                 | 39.6                 | 1205              |
+| DeepSeek-R1-Distill-Llama-70B        | 70.0             | **86.7**          | **94.5**        | **65.2**             | **57.5**             | 1633              |
+
+</div>
 
 ## Critical Analysis 
 ### Limitations
@@ -100,6 +149,41 @@ Future work directions include:
 2. Addressing language mixing issues
 3. Improving software engineering capabilities
 4. Optimizing prompting techniques
+
+## Official Prompts
+In the official DeepSeek web/app, we don't use system prompts but design two specific prompts for file upload and web search for better user experience. In addition, the temperature in web/app is 0.6.
+
+For file upload, please follow the template to create prompts, where {file_name}, {file_content} and {question} are arguments.
+
+```
+file_template = \
+"""[file name]: {file_name}
+[file content begin]
+{file_content}
+[file content end]
+{question}"""
+```
+
+For Web Search, {search_results}, {cur_date}, and {question} are arguments.
+search_answer_en_template = \
+```
+# The following contents are the search results related to the user's message:
+{search_results}
+In the search results I provide to you, each result is formatted as [webpage X begin]...[webpage X end], where X represents the numerical index of each article. Please cite the context at the end of the relevant sentence when appropriate. Use the citation format [citation:X] in the corresponding part of your answer. If a sentence is derived from multiple contexts, list all relevant citation numbers, such as [citation:3][citation:5]. Be sure not to cluster all citations at the end; instead, include them in the corresponding parts of the answer.
+When responding, please keep the following points in mind:
+- Today is {cur_date}.
+- Not all content in the search results is closely related to the user's question. You need to evaluate and filter the search results based on the question.
+- For listing-type questions (e.g., listing all flight information), try to limit the answer to 10 key points and inform the user that they can refer to the search sources for complete information. Prioritize providing the most complete and relevant items in the list. Avoid mentioning content not provided in the search results unless necessary.
+- For creative tasks (e.g., writing an essay), ensure that references are cited within the body of the text, such as [citation:3][citation:5], rather than only at the end of the text. You need to interpret and summarize the user's requirements, choose an appropriate format, fully utilize the search results, extract key information, and generate an answer that is insightful, creative, and professional. Extend the length of your response as much as possible, addressing each point in detail and from multiple perspectives, ensuring the content is rich and thorough.
+- If the response is lengthy, structure it well and summarize it in paragraphs. If a point-by-point format is needed, try to limit it to 5 points and merge related content.
+- For objective Q&A, if the answer is very brief, you may add one or two related sentences to enrich the content.
+- Choose an appropriate and visually appealing format for your response based on the user's requirements and the content of the answer, ensuring strong readability.
+- Your answer should synthesize information from multiple relevant webpages and avoid repeatedly citing the same webpage.
+- Unless the user requests otherwise, your response should be in the same language as the user's question.
+
+# The user's message is:
+{question}
+```
 
 ## Questions for the Audience
 ### Question 1
