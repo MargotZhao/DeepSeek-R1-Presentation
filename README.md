@@ -196,13 +196,17 @@ The authors observed an "aha moment" where DeepSeek-R1-Zero spontaneously develo
 
 ## Resources and References
 - GitHub Repository: https://github.com/deepseek-ai/DeepSeek-R1
-- Paper: "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" (Jan 2025)
-- Model API: Available through DeepSeek's API services
-- Related Work: OpenAI's o1 series, GRPO framework paper, Math-Shepherd
+- AI@Meta. Llama 3.1 model card, 2024. URL https://github.com/meta-llama/llama-m
+ odels/blob/main/models/llama3_1/MODEL_CARD.md
+- Anthropic. Claude 3.5 sonnet, 2024. URL https://www.anthropic.com/news/claude-3-5-sonnet
+- M. Chen, J. Tworek, H. Jun, Q. Yuan, H. P. de Oliveira Pinto, J. Kaplan, H. Edwards, Y. Burda,
+ N.Joseph, G. Brockman, A.Ray, R.Puri, G.Krueger, M.Petrov, H. Khlaaf, G. Sastry, P. Mishkin,
+ B. Chan, S. Gray, N. Ryder, M. Pavlov, A. Power, L. Kaiser, M. Bavarian, C. Winter, P. Tillet,
+ F. P. Such, D. Cummings, M. Plappert, F. Chantzis, E. Barnes, A. Herbert-Voss, W. H. Guss,
+ A. Nichol, A. Paino, N. Tezak, J. Tang, I. Babuschkin, S. Balaji, S. Jain, W. Saunders, C. Hesse,
+ A. N. Carr, J. Leike, J. Achiam, V. Misra, E. Morikawa, A. Radford, M. Knight, M. Brundage,
+ M. Murati, K. Mayer, P. Welinder, B. McGrew, D. Amodei, S. McCandlish, I. Sutskever, and
+ W. Zaremba. Evaluating large language models trained on code. CoRR, abs/2107.03374, 2021.
+ URLhttps://arxiv.org/abs/2107.03374.
+- My pseudocode of Deepseek-R1 algorithms
 
-*Note: I'll conclude by taking questions from the audience, and direct them to our repository for further information, code examples, and detailed documentation.*
-  title={DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning},
-  author={DeepSeek-AI},
-  journal={arXiv preprint arXiv:2501.12948},
-  year={2025}
-}
